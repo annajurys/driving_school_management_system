@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SignUp</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</nav>
+<div class="myform form mx-auto">
+    <label class="labelCenter">Sign Up</label>
+    <form th:action="@{/save-sign-up}" th:object="${newUser}" method="post">
+        <div class="input-group">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-secondary active">
+                    <input type="radio" name="roles" id="learner" value="learner" checked> Learner
+                </label>
+                <label class="btn btn-secondary">
+                    <input type="radio" name="roles" id="instructor" value="instructor"> Instructor
+                </label>
+            </div>
+        </div>
+        <p class="p-1"></p>
+        <p style="color: red; text-align: center;" th:text="${error}"></p>
+        <p style="color: darkolivegreen; text-align: center;" th:text="${news}"></p>
+        <div class="form-group">
+            <input type="email" th:field="*{email}" class="form-control" placeholder="Email"
+                   aria-describedby="inputGroupPrepend" required>
+        </div>
+        <div class="form-group">
+            <input type="password" th:field="*{password}" class="form-control" placeholder="Password"
+                   aria-describedby="inputGroupPrepend" required>
+        </div>
+        <div class="form-group">
+            <input type="text" th:value="${newUserDetail.name}" name="name" class="form-control" placeholder="Name"
+                   aria-describedby="inputGroupPrepend" required>
+        </div>
+        <div class="form-group">
+            <input type="text" th:value="${newUserDetail.surname}" name="surname" class="form-control"
+                   placeholder="Surname" aria-describedby="inputGroupPrepend" required>
+        </div>
+        <div class="form-group">
+            <input type="text" th:value="${newUserDetail.address}" name="address" class="form-control"
+                   placeholder="Address" aria-describedby="inputGroupPrepend" required>
+        </div>
+        <div class="form-group">
+            <input type="tel" th:value="${newUserDetail.telephone}" name="telephone" class="form-control"
+                   placeholder="Telephone" aria-describedby="inputGroupPrepend" required>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-4" style="padding: 0; text-align: left;">
+                    <button type="submit" class="btn btn-dark mx-auto">SIGN UP</button>
+                </div>
+                <div class="col-8" style="padding: 0; line-height: 38px;  text-align: right;">
+                    <p style="margin: 0; line-height: 1; display: inline-block;  vertical-align: middle;">You have an
+                        account? <a href="/" id="signup">Log in here</a></p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+</body>
+</html>

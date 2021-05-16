@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Messenger</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+<body>
+
+<script>
+    function costamdozmiany() {
+        document.getElementById("ninja").submit();
+    }
+
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Back to menu</a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" href="/messenger"><img src="/mail.png" width="50px" height="50px"></a>
+    <a class="navbar-brand" href="/logout"><img src="/logout.png" width="50px" height="50px"></a>
+</nav>
+
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="myform form mx-auto">
+        <label class="labelCenter">Messenger</label>
+        <p style="color: red; text-align: center;" th:text="${error}"></p>
+        <p style="color: darkolivegreen; text-align: center;" th:text="${news}"></p>
+
+        <div class="container py-5 px-4">
+            <div class="row rounded-lg overflow-hidden shadow">
+                <form id="ninja" th:action="@{/sum}" method="POST">
+                    <select th:object="${newMessage.idTo}" onchange="costamdozmiany()" id="costam" name="user"
+                            class="form-control">
+                        <option value="" disabled>Choose a person...</option>
+                        <option th:each="user: ${userList}" th:value="${user.getIdUser()}"
+                                th:text="${user.getRole() + ' : ' + user.getUserDetail().getSurname() + ' ' + user.getUserDetail().getName()}"
+                                th:selected="(${sele} == ${user.getIdUser()})"></option>
+                    </select>
+                </form>
+                <form th:action="@{/save-messenger}" th:object="${newMessage}" method="post" class="bg-light">
+                    <!-- Chat Box-->
+                    <div class="col-12 px-0">
+                        <div class="px-4 py-5 chat-box bg-white">
+                            <!-- MESSAGES-->
+                            <table style="width: 100%;" class="table">
+                                <tr th:each="message: ${messageGoodList}">
+                                    <div th:switch="${message.idTo}">
+                                        <td th:case="${sele}">
+                                            <div class="media w-50 ml-auto mb-3">
+                                                <div class="media-body">
+                                                    <div class="bg-primary rounded py-2 px-3 mb-2">
+                                                        <p class="text-small mb-0 text-white"
+                                                           th:text="${message.getMessageContent()}"></p>
+                                                    </div>
+                                                    <p class="small text-muted"
+                                                       th:text="${#dates.format(message.getDate(), 'yyyy-MM-dd HH:mm')}"></p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:case="*">
+                                            <div class="media w-50 mb-3"><img
+                                                    th:src="${message.getUserDetailFrom().getAvatar()}" alt="user"
+                                                    width="50" class="rounded-circle">
+                                                <div class="media-body ml-3">
+                                                    <div class="bg-light rounded py-2 px-3 mb-2">
+                                                        <p class="text-small mb-0 text-muted"
+                                                           th:text="${message.getMessageContent()}"></p>
+                                                    </div>
+                                                    <p class="small text-muted"
+                                                       th:text="${#dates.format(message.getDate(), 'yyyy-MM-dd HH:mm')}"></p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </div>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Typing area -->
+                        <div class="input-group">
+                            <input type="text" th:field="*{messageContent}" placeholder="New message"
+                                   aria-describedby="button-addon2"
+                                   class="form-control rounded-0 border-0 py-4 bg-light">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-dark mx-auto" name="send">SEND</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+</div>
+</body>
+</html>

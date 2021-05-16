@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Planned lessons</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+<body>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/driving_instructor_home">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/driving_instructor_planned_lessons">Planned lessons<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/driving_instructor_comments">Your comments</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/driving_instructor_holiday">Holiday</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/driving_instructor_documents">Documents</a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" href="/messenger"><img src="/mail.png" width="50px" height="50px"></a>
+    <a class="navbar-brand" href="/logout"><img src="/logout.png" width="50px" height="50px"></a>
+</nav>
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="myform form mx-auto">
+        <p style="color: red; text-align: center;" th:text="${error}"></p>
+        <p style="color: darkolivegreen; text-align: center;" th:text="${news}"></p>
+
+        <label class="labelCenter">Your lessons</label>
+        <table style="width: 100%;" class="table" id="example">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Learner</th>
+                <th scope="col">Confirmed</th>
+            </tr>
+            </thead>
+            <tr th:each="lesson : ${lessonList}">
+                <td th:text="${#dates.format(lesson.getDate(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${lesson.getUserDetailLearner().getSurname() + ' ' + lesson.getUserDetailLearner().getName()}"></td>
+                <div th:switch="${lesson.getStatus()}">
+                    <td th:case="waiting">
+                        <form th:action="@{/set-confirmed-lesson-from-planned-lessons}" th:object="${lesson}"
+                              method="post">
+                            <input type="hidden" name="id" th:value="${lesson.getIdLesson()}"/>
+                            <button class="btn btn-dark mx-auto" th:id="${lesson.getIdLesson()}" type="submit">CONFIRM
+                            </button>
+                        </form>
+                    </td>
+                    <td th:case="*" th:text="${lesson.getStatus()}"></td>
+                </div>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+</body>
+</html>

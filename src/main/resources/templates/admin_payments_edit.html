@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Users</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+<body>
+
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin_home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin_users">Users</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/admin_payments">Payments<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin_lessons">Lessons</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin_lectures">Lectures</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin_holidays">Holidays</a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" href="/messenger"><img src="/mail.png" width="50px" height="50px"></a>
+    <a class="navbar-brand" href="/logout"><img src="/logout.png" width="50px" height="50px"></a>
+</nav>
+
+
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="myform form mx-auto">
+        <label class="labelCenter">Change everything you need and click SAVE</label>
+        <p style="color: red; text-align: center;" th:text="${error}"></p>
+        <p style="color: darkolivegreen; text-align: center;" th:text="${news}"></p>
+        <form th:action="@{/save-admin-payments-edit}" th:object="${editPayment}" method="post">
+            <div class="form-group">
+                <label for="paymentEndDate">End Date</label>
+                <input type="datetime-local" th:value="${endDate}" name="endDate" class="form-control"
+                       id="paymentEndDate" aria-describedby="inputGroupPrepend">
+            </div>
+            <div class="form-group">
+                <label for="paymentRealizationDate">Realization Date</label>
+                <input type="datetime-local" th:value="${realizeDate}" name="realizeDate" class="form-control"
+                       id="paymentRealizationDate" aria-describedby="inputGroupPrepend">
+            </div>
+            <div class="form-group">
+                <label for="paymentPrice">Price</label>
+                <input type="double" th:value="${editPayment.getPrice()}" name="price" class="form-control"
+                       id="paymentPrice" placeholder="Price" aria-describedby="inputGroupPrepend" required>
+            </div>
+
+            <div class="col-6" style="padding: 0; text-align: left;">
+                <button type="submit" class="btn btn-dark mx-auto">SAVE</button>
+            </div>
+        </form>
+        <p class="p-2"></p>
+        <div class="col-6" style="padding: 0; text-align: left;">
+            <a href="/admin_payments" style="text-decoration: none; color: white">
+                <button class="btn btn-dark mx-auto">BACK</button>
+            </a>
+        </div>
+
+
+    </div>
+</div>
+
+
+</body>
+</html>

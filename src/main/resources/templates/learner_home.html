@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item active">
+                <a class="nav-link" href="/learner_home">Home<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_practise">Practise</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_theory">Theory</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_statistics">Statistics</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_payments">Payments</a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" href="/messenger"><img src="/mail.png" width="50px" height="50px"></a>
+    <a class="navbar-brand" href="/logout"><img src="/logout.png" width="50px" height="50px"></a>
+</nav>
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="myform form mx-auto">
+        <label class="labelCenter">Your progress</label>
+        <canvas id="myChart" width="200" height="70"></canvas>
+        <script>
+            let myChart = document.getElementById('myChart').getContext('2d');
+
+            let massPopChart = new Chart(myChart, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Theory', 'Practise'],
+                    datasets: [{
+                        label: 'Theory',
+                        data: [[${chart}]],
+                        backgroundColor: [
+                            'rgba(255,99,132,0.6)',
+                            'rgba(130,99,190,0.6)'
+                        ],
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.yLabel;
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 30,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+
+        <label class="labelCenter">Notifications</label>
+
+        <label th:each="string: ${stringList}"><p th:text="${string}"></p></label>
+
+        <label th:each="message: ${messageUnreadList}"><p
+                th:text="${'You have new message from ' + message.getUserDetailFrom().getSurname()} + ' ' + ${message.getUserDetailFrom().getName()}"></p>
+        </label>
+
+        <label th:each="payment: ${paymentGoodList}"><p
+                th:text="${'You have not paid payment, remeber to pay before ' + payment.getEndDate()}"></p></label>
+
+        <label th:text="${lecture}"></label>
+
+        <label class="labelCenter">First 3 upcoming lessons</label>
+
+        <table style="width: 100%;" class="table">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Instructor</th>
+                <th scope="col">Additional</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tr th:each="lesson: ${lessonUpcomingTop3List}">
+                <td th:text="${#dates.format(lesson.getDate(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${lesson.getUserDetailInstructor().getSurname() + ' ' + lesson.getUserDetailInstructor().getName()}"></td>
+                <td th:text="${lesson.isAdditional()}"></td>
+                <div th:switch="${lesson.getStatus()}">
+                    <td th:case="*" th:text="${lesson.getStatus()}"></td>
+                    <td th:case="waiting">
+                        <form th:action="@{/send-message-to-confirm}" th:object="${lesson}" method="post">
+                            <input type="hidden" name="id" th:value="${lesson.getIdLesson()}"/>
+                            <button class="btn btn-dark mx-auto" th:id="${lesson.getIdLesson()}" type="submit">SEND
+                                MESSAGE TO INSTRUCTOR
+                            </button>
+                        </form>
+                    </td>
+                </div>
+            </tr>
+        </table>
+
+        <p class="p-1"></p>
+    </div>
+</div>
+
+
+</body>
+</html>

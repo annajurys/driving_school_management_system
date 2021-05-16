@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistics</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_home">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_practise">Practise</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_theory">Theory</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/learner_statistics">Statistics<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_payments">Payments</a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" href="/messenger"><img src="/mail.png" width="50px" height="50px"></a>
+    <a class="navbar-brand" href="/logout"><img src="/logout.png" width="50px" height="50px"></a>
+</nav>
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="myform form mx-auto">
+        <label class="labelCenter">Comparison your grades to others</label>
+        <p style="color: red; text-align: center;" th:text="${error}"></p>
+        <p style="color: darkolivegreen; text-align: center;" th:text="${news}"></p>
+
+        <canvas id="myChart" width="200" height="70"></canvas>
+        <script>
+            let myChart = document.getElementById('myChart').getContext('2d');
+
+            let massPopChart = new Chart(myChart, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['Your average', 'Average of all learners'],
+                    datasets: [{
+                        label: 'Theory',
+                        data: [[${chart}]],
+                        backgroundColor: [
+                            'rgba(255,99,132,0.6)',
+                            'rgba(130,99,190,0.6)'
+                        ],
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.yLabel;
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 5,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+
+
+        <label class="labelCenter">Timeline of your practise lessons</label>
+        <canvas id="myChart2" width="200" height="70"></canvas>
+        <script>
+            let myChart2 = document.getElementById('myChart2').getContext('2d');
+
+            let massPopChart2 = new Chart(myChart2, {
+                type: 'line',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+                    datasets: [{
+                        label: 'Theory',
+                        data: [[${timeline}]],
+                        backgroundColor: [
+                            'rgba(255,99,132,0.6)',
+                            'rgba(130,99,190,0.6)'
+                        ],
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function (tooltipItem) {
+                                return tooltipItem.yLabel;
+                            }
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            ticks: {
+                                min: 0,
+                                max: 5,
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                }
+            });
+        </script>
+
+
+    </div>
+</div>
+
+</body>
+</html>

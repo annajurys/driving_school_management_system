@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Practise</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+
+</head>
+<body>
+
+<script>
+    $(document).ready(function () {
+        $('#example').DataTable();
+    });
+    $(document).ready(function () {
+        $('#example2').DataTable();
+    });
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">School name and logo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_home">Home</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/learner_practise">Practise<span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_theory">Theory</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_statistics">Statistics</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/learner_payments">Payments</a>
+            </li>
+        </ul>
+    </div>
+    <a class="navbar-brand" href="/messenger"><img src="/mail.png" width="50px" height="50px"></a>
+    <a class="navbar-brand" href="/logout"><img src="/logout.png" width="50px" height="50px"></a>
+</nav>
+<div class="d-flex justify-content-center align-items-center" style="height: 100%;">
+    <div class="myform form mx-auto">
+
+        <label class="labelCenter">Your progress</label>
+        <div class="chart-container" style="height:500px; width: 500px">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <script>
+            let myChart = document.getElementById('myChart').getContext('2d');
+
+            let massPopChart = new Chart(myChart, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Done', 'Planned', 'Not planned yet'],
+                    datasets: [{
+                        label: 'Theory',
+                        data: [[${chart}]],
+                        backgroundColor: [
+                            'rgba(255,99,132,0.6)',
+                            'rgba(130,99,190,0.6)',
+                            'rgba(40,99,100,0.6)'
+                        ],
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            fontColor: 'rgb(255, 99, 132)'
+                        }
+                    },
+                    layout: {
+                        padding: {
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0
+                        }
+                    }
+                }
+            });
+        </script>
+
+        <label class="labelCenter">Plan new lesson</label>
+        <p style="color: red; text-align: center;" th:text="${error}"></p>
+        <p style="color: darkolivegreen; text-align: center;" th:text="${news}"></p>
+        <form th:action="@{/continue-lesson}" th:object="${newLesson}" method="post">
+            <div class="form-group">
+                <label for="dd">Instructor</label>
+                <select th:value="${newLesson.idDrivingInstructor}" name="instructor1" class="form-control" id="dd">
+                    <option th:each="instructor1: ${userDrivingInstructorList}" th:value="${instructor1.getIdUser()}"
+                            th:text="${instructor1.getUserDetail().getSurname() + ' ' + instructor1.getUserDetail().getName()}"></option>
+                </select>
+            </div>
+            <div class="col-6" style="padding: 0; text-align: left;">
+                <button type="submit" class="btn btn-dark mx-auto">CONTINUE</button>
+            </div>
+        </form>
+
+        <label class="labelCenter">Upcoming lessons</label>
+        <table style="width: 100%;" class="table" id="example">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Instructor</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <tr th:each="lesson: ${lessonUpcomingList}">
+                <td th:text="${#dates.format(lesson.getDate(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${lesson.getUserDetailInstructor().getSurname() + ' ' + lesson.getUserDetailInstructor().getName()}"></td>
+                <td th:text="${lesson.getStatus()}"></td>
+            </tr>
+        </table>
+
+        <label class="labelCenter">Past lessons</label>
+        <table style="width: 100%;" class="table" id="example2">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col" style="width: 17%">Date</th>
+                <th scope="col">Instructor</th>
+                <th scope="col">Grade</th>
+                <th scope="col">Comment</th>
+            </tr>
+            </thead>
+            <tr th:each="lesson: ${lessonPastList}">
+                <td th:text="${#dates.format(lesson.getDate(), 'yyyy-MM-dd HH:mm')}"></td>
+                <td th:text="${lesson.getUserDetailInstructor().getSurname() + ' ' + lesson.getUserDetailInstructor().getName()}"></td>
+                <td th:text="${lesson.getComment()} ? ${lesson.getComment().getGrade()} : '-'"/>
+                <td th:text="${lesson.getComment()} ? ${lesson.getComment().getComment()} : '-'"/>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
